@@ -3,7 +3,9 @@ package main
 import (
 	"archive/zip"
 	"bytes"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -128,8 +130,27 @@ func main() {
 		}
 	}
 
-	files := map[string]string{}
-	files[".hyperexecute.yaml"] = "version: 0.1\nrunson: win\nautosplit: true\nconcurrency: 1\ntestDiscovery:\n  type: raw\n  mode: dynamic\n  command: echo test\n\ntestRunnerCommand: node --version"
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
-	runOnHyperExecute(pwd, executableName, files)
+	http.HandleFunc("/run", func(w http.ResponseWriter, r *http.Request) {
+		defer r.Body.Close()
+		payload, err := io.ReadAll(r.Body)
+		if err != nil {
+			fmt.Fprintf(w, "invalid request")
+			return
+		}
+
+		var files map[string]string
+		if err = json.Unmarshal(payload, &files); err != nil {
+			log.Println("invalid payload: " + err.Error())
+			fmt.Fprintf(w, "invalid request")
+			return
+		}
+
+		go runOnHyperExecute(pwd, executableName, files)
+
+		fmt.Fprintf(w, "submitted")
+	})
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
