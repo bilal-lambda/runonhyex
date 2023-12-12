@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -17,6 +18,7 @@ import (
 )
 
 var HYPEREXECUTE_CLI_DOWNLOAD_LINK = "https://downloads.lambdatest.com/hyperexecute/darwin/hyperexecute"
+var LISTEN_ADDR = ":8080"
 
 func download(url, filename string) error {
 	out, err := os.Create(filename)
@@ -132,6 +134,27 @@ func main() {
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
+	http.HandleFunc("/upload", func(w http.ResponseWriter, r *http.Request) {
+		r.ParseMultipartForm(3 * 1000 * 1000)
+
+		file, header, err := r.FormFile("file")
+		if err != nil {
+			fmt.Fprintf(w, "invalid request")
+			return
+		}
+		defer file.Close()
+
+		log.Println("uploaded file name: " + header.Filename)
+
+		b, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Fprintf(w, "corrupt file")
+			return
+		}
+
+		w.Write(b)
+	})
+
 	http.HandleFunc("/run", func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 		payload, err := io.ReadAll(r.Body)
@@ -152,5 +175,6 @@ func main() {
 		fmt.Fprintf(w, "submitted")
 	})
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("ready to serve on " + LISTEN_ADDR)
+	log.Fatal(http.ListenAndServe(LISTEN_ADDR, nil))
 }
