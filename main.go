@@ -73,16 +73,16 @@ func buildPayload(payloadFile *os.File, files map[string]string) error {
 	return err
 }
 
-func runOnHyperExecute(pwd, executableName string, files map[string]string) error {
+func runOnHyperExecute(pwd, executableName string, files map[string]string) ([]byte, error) {
 	payloadFile, err := os.CreateTemp(pwd, "runonhyex")
 	if err != nil {
 		log.Println("failed to create temporary file: " + err.Error())
-		return err
+		return []byte{}, err
 	}
 	defer os.Remove(payloadFile.Name())
 
 	if err = buildPayload(payloadFile, files); err != nil {
-		return err
+		return []byte{}, err
 	}
 
 	args := []string{"--no-track", "--use-zip", payloadFile.Name()}
@@ -93,7 +93,7 @@ func runOnHyperExecute(pwd, executableName string, files map[string]string) erro
 		log.Println(err.Error())
 	}
 	log.Printf("\n%s\n", output)
-	return err
+	return output, err
 }
 
 func main() {
@@ -170,9 +170,9 @@ func main() {
 			return
 		}
 
-		go runOnHyperExecute(pwd, executableName, files)
+		output, err := runOnHyperExecute(pwd, executableName, files)
 
-		fmt.Fprintf(w, "submitted")
+		w.Write(output)
 	})
 
 	log.Println("ready to serve on " + LISTEN_ADDR)
