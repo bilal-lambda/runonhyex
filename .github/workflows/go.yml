@@ -10,6 +10,12 @@ jobs:
     runs-on: hyex
     steps:
     - uses: actions/checkout@v3
+
+    - name: Check
+      run: echo %GOROOT%
+
+    - name: Cleanup
+      run: set GOROOT=
     
     - name: Set up Go
       uses: actions/setup-go@v4
