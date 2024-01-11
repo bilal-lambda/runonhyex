@@ -1,0 +1,16 @@
+name: Test
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: hyex
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Test Step
+      run: ls -lh
