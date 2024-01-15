@@ -29,15 +29,6 @@ jobs:
       with:
         go-version: '1.19'
         cache: false
-
-    - name: Check Before
-      run: echo $env:GOROOT
-
-    - name: Cleanup
-      run: set $env:GOROOT=''
-
-    - name: Check After
-      run: echo $env:GOROOT
       
     - name: Build
       run: go build -v ./...
