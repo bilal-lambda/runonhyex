@@ -4,6 +4,10 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  GOROOT: ''
+  GOTOOLDIR: ''
+
 jobs:
 
   build:
