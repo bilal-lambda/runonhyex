@@ -6,6 +6,7 @@ on:
 
 env:
   GOROOT: ''
+  AGENT_ISSELFHOSTED: 1
 
 jobs:
   build:
