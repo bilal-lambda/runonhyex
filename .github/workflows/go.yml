@@ -10,6 +10,15 @@ jobs:
     runs-on: hyex
     steps:
     - uses: actions/checkout@v3
+
+    - name: Check conditions
+      run: echo %RUNNER_ENVIRONMENT%
+    
+    - name: Check conditions
+      run: echo %AGENT_ISSELFHOSTED%
+    
+    - name: Check conditions
+      run: echo %RUNNER_TOOL_CACHE%
     
     - name: Set up Go
       uses: actions/setup-go@v4
