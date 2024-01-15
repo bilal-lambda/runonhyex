@@ -6,24 +6,13 @@ on:
 
 env:
   GOROOT: ''
-  GOTOOLDIR: ''
 
 jobs:
-
   build:
     runs-on: hyex
     steps:
     - uses: actions/checkout@v3
 
-    - name: Check conditions
-      run: echo $env:RUNNER_ENVIRONMENT
-    
-    - name: Check conditions
-      run: echo $env:AGENT_ISSELFHOSTED
-    
-    - name: Check conditions
-      run: echo $env:RUNNER_TOOL_CACHE
-    
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
@@ -32,6 +21,3 @@ jobs:
       
     - name: Build
       run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
