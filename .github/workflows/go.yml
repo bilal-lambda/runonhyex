@@ -13,6 +13,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Check conditions
+      run: |
+        node -e "console.log('RUNNER_ENVIRONMENT:' + require('process').env['RUNNER_ENVIRONMENT'])"
+        node -e "console.log('AGENT_ISSELFHOSTED:' + require('process').env['AGENT_ISSELFHOSTED'])"
+        node -e "console.log('RUNNER_TOOL_CACHE:' + require('process').env['RUNNER_TOOL_CACHE'])"
+
+  
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
