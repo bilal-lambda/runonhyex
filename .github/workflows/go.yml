@@ -12,13 +12,13 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Check conditions
-      run: echo %RUNNER_ENVIRONMENT%
+      run: echo $env:RUNNER_ENVIRONMENT
     
     - name: Check conditions
-      run: echo %AGENT_ISSELFHOSTED%
+      run: echo $env:AGENT_ISSELFHOSTED
     
     - name: Check conditions
-      run: echo %RUNNER_TOOL_CACHE%
+      run: echo $env:RUNNER_TOOL_CACHE
     
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -27,13 +27,13 @@ jobs:
         cache: false
 
     - name: Check Before
-      run: echo %GOROOT%
+      run: echo $env:GOROOT
 
     - name: Cleanup
-      run: set GOROOT=
+      run: set $env:GOROOT=''
 
     - name: Check After
-      run: echo %GOROOT%
+      run: echo $env:GOROOT
       
     - name: Build
       run: go build -v ./...
